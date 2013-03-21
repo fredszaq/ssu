@@ -6,9 +6,7 @@ import scala.xml.XML
 
 object RssTest extends App {
 
-  override def main(args: Array[String]) {
-    println("Hello, world!")
-    
+  override def main(args: Array[String]) { 
     val myItems= ("hello","world") :: ("You are", "a bitch") :: Nil
     
     val rss= RssFeed("some title<hello>world</hello>", "http://someli.nk", "some description<heloo>world</heloo>")
@@ -18,7 +16,7 @@ object RssTest extends App {
     
    extractedLocalValue.toString
     XML.save("/tmp/test", extractedLocalValue/*, xmlDecl=true*/)
-    println(new PrettyPrinter(100,4).format(extractedLocalValue))
+    println(new PrettyPrinter(100,4).format(XML.loadString(extractedLocalValue.toString)))
   }
 
 }

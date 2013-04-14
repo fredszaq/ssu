@@ -23,7 +23,7 @@ case class RssFeed(title: String,
   textInput: Option[Any] = None, //TODO see how that works, low priority
   skipHours: Option[Traversable[Int]] = None,
   skipDays: Option[Traversable[Int]] = None,
-  items: Option[Traversable[RssItem]] = None) {
+  items: Option[Traversable[RssItem[ValidItem]]] = None) {
 
   def withLanguage(language: Locale) = copy(language = Some(language))
   def withLanguage(language: Option[Locale]) = copy(language = language)
@@ -73,8 +73,8 @@ case class RssFeed(title: String,
   def withSkipDays(skipDays: Option[Traversable[Int]]) = copy(skipDays = skipDays)
   def withSkipDays(skipDays: Traversable[Int]) = copy(skipDays = Some(skipDays))
 
-  def withItems(items: Option[Traversable[RssItem]]) = copy(items = items)
-  def withItems(items: Traversable[RssItem]) = copy(items = Some(items))
+  def withItems(items: Option[Traversable[RssItem[ValidItem]]]) = copy(items = items)
+  def withItems(items: Traversable[RssItem[ValidItem]]) = copy(items = Some(items))
 
   def toXml = Utility.trim(
     <rss version="2.0">

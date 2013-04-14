@@ -1,7 +1,15 @@
 package com.tlorrain.ssu.rss
 
-case class RssItem(title: String,
-  description: String,
+
+abstract class ItemValidity
+
+abstract class ValidItem extends ItemValidity
+abstract class InvalidItem extends ItemValidity
+
+
+
+case class RssItem[Validity <: ItemValidity] (title: Option[String]=None,
+  description: Option[String]=None,
   link: Option[String] = None, //TODO URI
   author: Option[String] = None, // TODO email
   category: Option[String] = None, // TODO optional attribute "domain"
@@ -11,34 +19,38 @@ case class RssItem(title: String,
   pubDate: Option[Long] = None, // TODO date
   source: Option[Tuple2[String, String]] = None // TODO proper type
   ) {
+  
+  def withTitle(title: String) = copy[ValidItem](title = Some(title))
 
-  def withLink(link: Option[String]) = copy(link = link)
-  def withLink(link: String) = copy(link = Some(link))
+  def withDescription(description: String) = copy[ValidItem](description = Some(description))
 
-  def withAuthor(author: Option[String]) = copy(author = author)
-  def withAuthor(author: String) = copy(author = Some(author))
+  def withLink(link: Option[String]) = copy[Validity](link = link)
+  def withLink(link: String) = copy[Validity](link = Some(link))
 
-  def withCategory(category: Option[String]) = copy(category = category)
-  def withCategory(category: String) = copy(category = Some(category))
+  def withAuthor(author: Option[String]) = copy[Validity](author = author)
+  def withAuthor(author: String) = copy[Validity](author = Some(author))
 
-  def withComments(comments: Option[String]) = copy(comments = comments)
-  def withComments(comments: String) = copy(comments = Some(comments))
+  def withCategory(category: Option[String]) = copy[Validity](category = category)
+  def withCategory(category: String) = copy[Validity](category = Some(category))
 
-  def withEnclosure(enclosure: Option[Tuple3[String, Long, String]]) = copy(enclosure = enclosure)
-  def withEnclosure(enclosure: Tuple3[String, Long, String]) = copy(enclosure = Some(enclosure))
+  def withComments(comments: Option[String]) = copy[Validity](comments = comments)
+  def withComments(comments: String) = copy[Validity](comments = Some(comments))
 
-  def withGuid(guid: Option[String]) = copy(guid = guid)
-  def withGuid(guid: String) = copy(guid = Some(guid))
+  def withEnclosure(enclosure: Option[Tuple3[String, Long, String]]) = copy[Validity](enclosure = enclosure)
+  def withEnclosure(enclosure: Tuple3[String, Long, String]) = copy[Validity](enclosure = Some(enclosure))
 
-  def withPubDate(pubDate: Option[Long]) = copy(pubDate = pubDate)
-  def withPubDate(pubDate: Long) = copy(pubDate = Some(pubDate))
+  def withGuid(guid: Option[String]) = copy[Validity](guid = guid)
+  def withGuid(guid: String) = copy[Validity](guid = Some(guid))
 
-  def withSource(source: Option[Tuple2[String, String]]) = copy(source = source)
-  def withSource(source: Tuple2[String, String]) = copy(source = Some(source))
+  def withPubDate(pubDate: Option[Long]) = copy[Validity](pubDate = pubDate)
+  def withPubDate(pubDate: Long) = copy[Validity](pubDate = Some(pubDate))
+
+  def withSource(source: Option[Tuple2[String, String]]) = copy[Validity](source = source)
+  def withSource(source: Tuple2[String, String]) = copy[Validity](source = Some(source))
 
   def toXml = <item>
-                <title>{ title }</title>
-                <description>{ description }</description>
+                { (for (title <- title) yield <title>{ title }</title>).getOrElse("") }
+                { (for (description <- description) yield <description>{ description }</description>).getOrElse("") }
                 { (for (link <- link) yield <link>{ link }</link>).getOrElse("") }
                 { (for (author <- author) yield <author>{ author }</author>).getOrElse("") }
                 { (for (category <- category) yield <category>{ category }</category>).getOrElse("") }

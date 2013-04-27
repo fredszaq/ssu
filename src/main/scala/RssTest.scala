@@ -29,7 +29,6 @@ object RssTest extends App {
         withCategory ("super category"))) toXml)
 
     XML.save("/tmp/test", feed , xmlDecl=true )
-    
     val xml=new PrettyPrinter(100, 4).format(XML.loadString(feed.toString))
     println(xml)
     

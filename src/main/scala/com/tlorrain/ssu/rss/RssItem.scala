@@ -6,8 +6,6 @@ abstract class ItemValidity
 abstract class ValidItem extends ItemValidity
 abstract class InvalidItem extends ItemValidity
 
-
-
 case class RssItem[Validity <: ItemValidity] (title: Option[String]=None,
   description: Option[String]=None,
   link: Option[String] = None, //TODO URI
@@ -16,7 +14,7 @@ case class RssItem[Validity <: ItemValidity] (title: Option[String]=None,
   comments: Option[String] = None, // TODO url
   enclosure: Option[Tuple3[String, Long, String]] = None, // TODO proper type ?
   guid: Option[String] = None,
-  pubDate: Option[Long] = None, // TODO date
+  pubDate: Option[Long] = None,
   source: Option[Tuple2[String, String]] = None // TODO proper type
   ) {
   

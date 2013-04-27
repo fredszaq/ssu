@@ -11,8 +11,8 @@ case class RssFeed(title: String,
   copyright: Option[String] = None,
   managingEditor: Option[String] = None, // TODO email
   webMaster: Option[String] = None, // TODO email
-  pubDate: Option[Long] = None, // TODO date
-  lastBuildDate: Option[Long] = None, // TODO date
+  pubDate: Option[Long] = None,
+  lastBuildDate: Option[Long] = None,
   category: Option[String] = None, // TODO optional attribute "domain"
   generator: Option[String] = Some("Scala Syndication Utils"),
   docs: Option[String] = Some("http://www.rssboard.org/rss-specification"), // TODO URI

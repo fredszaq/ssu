@@ -1,26 +1,54 @@
 package com.tlorrain.ssu.rss
 
-
 abstract class ItemValidity
 
-abstract class ValidItem extends ItemValidity
-abstract class InvalidItem extends ItemValidity
+abstract class WithTitleOrDescription extends ItemValidity
+abstract class WithoutTitleOrDescription extends ItemValidity
 
-case class RssItem[Validity <: ItemValidity] (title: Option[String]=None,
-  description: Option[String]=None,
-  link: Option[String] = None, //TODO URI
-  author: Option[String] = None, // TODO email
-  category: Option[String] = None, // TODO optional attribute "domain"
-  comments: Option[String] = None, // TODO url
-  enclosure: Option[Tuple3[String, Long, String]] = None, // TODO proper type ?
-  guid: Option[String] = None,
-  pubDate: Option[Long] = None,
-  source: Option[Tuple2[String, String]] = None // TODO proper type
+object RssItem extends RssItem[WithoutTitleOrDescription](None, None, None, None, None, None, None, None, None, None) {
+  def apply(title: Option[String] = None,
+    description: Option[String] = None,
+    link: Option[String] = None,
+    author: Option[String] = None,
+    category: Option[String] = None,
+    comments: Option[String] = None,
+    enclosure: Option[Tuple3[String, Long, String]] = None,
+    guid: Option[String] = None,
+    pubDate: Option[Long] = None,
+    source: Option[Tuple2[String, String]] = None
+    ) = (title, description) match {
+    case (None, None) => new RssItem[WithoutTitleOrDescription](title, description, link, author, category, comments, enclosure, guid, pubDate, source)
+    case _ => new RssItem[WithTitleOrDescription](title, description, link, author, category, comments, enclosure, guid, pubDate, source)
+  }
+}
+
+class RssItem[Validity <: ItemValidity] private (val title: Option[String] = None,
+  val description: Option[String] = None,
+  val link: Option[String] = None, //TODO URI
+  val author: Option[String] = None, // TODO email
+  val category: Option[String] = None, // TODO optional attribute "domain"
+  val comments: Option[String] = None, // TODO url
+  val enclosure: Option[Tuple3[String, Long, String]] = None, // TODO proper type ?
+  val guid: Option[String] = None,
+  val pubDate: Option[Long] = None,
+  val source: Option[Tuple2[String, String]] = None // TODO proper type
   ) {
-  
-  def withTitle(title: String) = copy[ValidItem](title = Some(title))
 
-  def withDescription(description: String) = copy[ValidItem](description = Some(description))
+  private def copy[V <: ItemValidity](title: Option[String] = title,
+    description: Option[String] = description,
+    link: Option[String] = link,
+    author: Option[String] = author,
+    category: Option[String] = category,
+    comments: Option[String] = comments,
+    enclosure: Option[Tuple3[String, Long, String]] = enclosure,
+    guid: Option[String] = guid,
+    pubDate: Option[Long] = pubDate,
+    source: Option[Tuple2[String, String]] = source
+    ) = new RssItem[V](title, description, link, author, category, comments, enclosure, guid, pubDate, source)
+  
+  def withTitle(title: String) = copy[WithTitleOrDescription](title = Some(title))
+
+  def withDescription(description: String) = copy[WithTitleOrDescription](description = Some(description))
 
   def withLink(link: Option[String]) = copy[Validity](link = link)
   def withLink(link: String) = copy[Validity](link = Some(link))

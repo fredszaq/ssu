@@ -8,8 +8,6 @@ import scala.xml.Utility
 
 object RssTest extends App {
   
-  //TODO true tests :D
-  //with compilation checks
 
   override def main(args: Array[String]) {
     val myItems = ("hello", "world") :: ("You are", "a bitch") :: Nil
@@ -19,7 +17,7 @@ object RssTest extends App {
     val rss2 = rss.copy(copyright = Some("toto"))
     val feed = (rss2
       withCopyright "Fredszaq"
-      withItems (myItems map (item => RssItem()
+      withItems (myItems map (item => RssItem
         withTitle item._1 // TODO better compiler error when not a valid Item
         withDescription item._2
         withLink "http://some.other.li.nk"
@@ -27,7 +25,7 @@ object RssTest extends App {
         withAuthor ("Fredszaq")
         withComments ("http://yetanother.url")
         withCategory ("super category"))) toXml)
-
+        
     XML.save("/tmp/test", feed , xmlDecl=true )
     val xml=new PrettyPrinter(100, 4).format(XML.loadString(feed.toString))
     println(xml)

@@ -10,7 +10,7 @@ object RssItem extends RssItem[WithoutTitleOrDescription](None, None, None, None
     description: Option[String] = None,
     link: Option[String] = None,
     author: Option[String] = None,
-    category: Option[String] = None,
+    category: Option[RssCategory] = None,
     comments: Option[String] = None,
     enclosure: Option[Tuple3[String, Long, String]] = None,
     guid: Option[String] = None,
@@ -26,7 +26,7 @@ class RssItem[Validity <: ItemValidity] private (val title: Option[String] = Non
   val description: Option[String] = None,
   val link: Option[String] = None, //TODO URI
   val author: Option[String] = None, // TODO email
-  val category: Option[String] = None, // TODO optional attribute "domain"
+  val category: Option[RssCategory] = None, // TODO list
   val comments: Option[String] = None, // TODO url
   val enclosure: Option[Tuple3[String, Long, String]] = None, // TODO proper type ?
   val guid: Option[String] = None,
@@ -38,7 +38,7 @@ class RssItem[Validity <: ItemValidity] private (val title: Option[String] = Non
     description: Option[String] = description,
     link: Option[String] = link,
     author: Option[String] = author,
-    category: Option[String] = category,
+    category: Option[RssCategory] = category,
     comments: Option[String] = comments,
     enclosure: Option[Tuple3[String, Long, String]] = enclosure,
     guid: Option[String] = guid,
@@ -56,8 +56,11 @@ class RssItem[Validity <: ItemValidity] private (val title: Option[String] = Non
   def withAuthor(author: Option[String]) = copy[Validity](author = author)
   def withAuthor(author: String) = copy[Validity](author = Some(author))
 
-  def withCategory(category: Option[String]) = copy[Validity](category = category)
-  def withCategory(category: String) = copy[Validity](category = Some(category))
+  // TODO type erasure problem if uncommented
+  // def withCategory(category: Option[String]) = copy[Validity](category = category map ( s => RssCategory(s)))
+  def withCategory(category: String) = copy[Validity](category = Some(RssCategory(category)))
+  def withCategory(category: Option[RssCategory]) = copy[Validity](category = category )
+  def withCategory(category: RssCategory) = copy[Validity](category = Some(category))
 
   def withComments(comments: Option[String]) = copy[Validity](comments = comments)
   def withComments(comments: String) = copy[Validity](comments = Some(comments))

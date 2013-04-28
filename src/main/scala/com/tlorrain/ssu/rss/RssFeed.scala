@@ -13,7 +13,7 @@ case class RssFeed(title: String,
   webMaster: Option[String] = None, // TODO email
   pubDate: Option[Long] = None,
   lastBuildDate: Option[Long] = None,
-  category: Option[String] = None, // TODO optional attribute "domain"
+  category: Option[RssCategory] = None, // TODO list
   generator: Option[String] = Some("Scala Syndication Utils"),
   docs: Option[String] = Some("http://www.rssboard.org/rss-specification"), // TODO URI
   cloud: Option[Any] = None, //see RSS cloud interface
@@ -42,9 +42,12 @@ case class RssFeed(title: String,
 
   def withLastBuildDate(lastBuildDate: Option[Long]) = copy(lastBuildDate = lastBuildDate)
   def withLastBuildDate(lastBuildDate: Long) = copy(lastBuildDate = Some(lastBuildDate))
-
-  def withCategory(category: Option[String]) = copy(category = category)
-  def withCategory(category: String) = copy(category = Some(category))
+  
+  // TODO type erasure problem if uncommented
+  // def withCategory(category: Option[String]) = copy(category = category map ( s => RssCategory(s)))
+  def withCategory(category: String) = copy(category = Some(RssCategory(category)))
+  def withCategory(category: Option[RssCategory]) = copy(category = category )
+  def withCategory(category: RssCategory) = copy(category = Some(category))
 
   def withGenerator(generator: Option[String]) = copy(generator = generator)
   def withGenerator(generator: String) = copy(generator = Some(generator))

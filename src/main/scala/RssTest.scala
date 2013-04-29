@@ -5,6 +5,7 @@ import scala.xml.PrettyPrinter
 import scala.xml.XML
 import scala.language.postfixOps
 import scala.xml.Utility
+import com.tlorrain.ssu.rss.RssEnclosure
 
 object RssTest extends App {
   
@@ -21,7 +22,7 @@ object RssTest extends App {
         withTitle item._1
         withDescription item._2
         withLink "http://some.other.li.nk"
-        withEnclosure ("http://u.rl", 666, "application/doom")
+        withEnclosure RssEnclosure("http://u.rl", 666, "application/doom")
         withAuthor ("Fredszaq")
         withComments ("http://yetanother.url")
         withCategory ("super category"))) toXml)

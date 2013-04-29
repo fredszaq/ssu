@@ -12,7 +12,7 @@ object RssItem extends RssItem[WithoutTitleOrDescription](None, None, None, None
     author: Option[String] = None,
     category: Option[RssCategory] = None,
     comments: Option[String] = None,
-    enclosure: Option[Tuple3[String, Long, String]] = None,
+    enclosure: Option[RssEnclosure] = None,
     guid: Option[String] = None,
     pubDate: Option[Long] = None,
     source: Option[Tuple2[String, String]] = None
@@ -28,7 +28,7 @@ class RssItem[Validity <: ItemValidity] private (val title: Option[String] = Non
   val author: Option[String] = None, // TODO email, is it possible to have multiple authors ?
   val category: Option[RssCategory] = None, // TODO list
   val comments: Option[String] = None, // TODO URI
-  val enclosure: Option[Tuple3[String, Long, String]] = None, // TODO proper type, is it possible to have multiple enclosures
+  val enclosure: Option[RssEnclosure] = None, // TODO proper type, is it possible to have multiple enclosures
   val guid: Option[String] = None,
   val pubDate: Option[Long] = None,
   val source: Option[Tuple2[String, String]] = None // TODO proper type
@@ -40,7 +40,7 @@ class RssItem[Validity <: ItemValidity] private (val title: Option[String] = Non
     author: Option[String] = author,
     category: Option[RssCategory] = category,
     comments: Option[String] = comments,
-    enclosure: Option[Tuple3[String, Long, String]] = enclosure,
+    enclosure: Option[RssEnclosure] = enclosure,
     guid: Option[String] = guid,
     pubDate: Option[Long] = pubDate,
     source: Option[Tuple2[String, String]] = source
@@ -65,8 +65,8 @@ class RssItem[Validity <: ItemValidity] private (val title: Option[String] = Non
   def withComments(comments: Option[String]) = copy[Validity](comments = comments)
   def withComments(comments: String) = copy[Validity](comments = Some(comments))
 
-  def withEnclosure(enclosure: Option[Tuple3[String, Long, String]]) = copy[Validity](enclosure = enclosure)
-  def withEnclosure(enclosure: Tuple3[String, Long, String]) = copy[Validity](enclosure = Some(enclosure))
+  def withEnclosure(enclosure: Option[RssEnclosure]) = copy[Validity](enclosure = enclosure)
+  def withEnclosure(enclosure: RssEnclosure) = copy[Validity](enclosure = Some(enclosure))
 
   def withGuid(guid: Option[String]) = copy[Validity](guid = guid)
   def withGuid(guid: String) = copy[Validity](guid = Some(guid))
@@ -84,7 +84,7 @@ class RssItem[Validity <: ItemValidity] private (val title: Option[String] = Non
                 { (for (author <- author) yield <author>{ author }</author>).getOrElse("") }
                 { (for (category <- category) yield <category>{ category }</category>).getOrElse("") }
                 { (for (comments <- comments) yield <comments>{ comments }</comments>).getOrElse("") }
-                { (for ((url, length, typ) <- enclosure) yield <enclosure url={ url } length={ length.toString } type={ typ }/>).getOrElse("") }
+                { (for (enclosure <- enclosure) yield <enclosure url={ enclosure.url } length={ enclosure.length.toString } type={ enclosure.mimeType }/>).getOrElse("") }
                 { (for (guid <- guid) yield <guid>{ guid }</guid>).getOrElse("") }
                 { (for (pubDate <- pubDate) yield <pubDate>{ pubDate }</pubDate>).getOrElse("") }
                 { (for ((url, title) <- source) yield <source url={ url }>{ title }</source>).getOrElse("") }

@@ -25,10 +25,10 @@ object RssItem extends RssItem[WithoutTitleOrDescription](None, None, None, None
 class RssItem[Validity <: ItemValidity] private (val title: Option[String] = None,
   val description: Option[String] = None,
   val link: Option[String] = None, //TODO URI
-  val author: Option[String] = None, // TODO email
+  val author: Option[String] = None, // TODO email, is it possible to have multiple authors ?
   val category: Option[RssCategory] = None, // TODO list
-  val comments: Option[String] = None, // TODO url
-  val enclosure: Option[Tuple3[String, Long, String]] = None, // TODO proper type ?
+  val comments: Option[String] = None, // TODO URI
+  val enclosure: Option[Tuple3[String, Long, String]] = None, // TODO proper type, is it possible to have multiple enclosures
   val guid: Option[String] = None,
   val pubDate: Option[Long] = None,
   val source: Option[Tuple2[String, String]] = None // TODO proper type

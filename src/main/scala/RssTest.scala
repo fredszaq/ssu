@@ -18,7 +18,7 @@ object RssTest extends App {
     val feed = (rss2
       withCopyright "Fredszaq"
       withItems (myItems map (item => RssItem
-        withTitle item._1 // TODO better compiler error when not a valid Item
+        withTitle item._1
         withDescription item._2
         withLink "http://some.other.li.nk"
         withEnclosure ("http://u.rl", 666, "application/doom")

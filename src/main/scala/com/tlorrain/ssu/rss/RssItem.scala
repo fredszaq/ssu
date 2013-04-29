@@ -15,7 +15,7 @@ object RssItem extends RssItem[WithoutTitleOrDescription](None, None, None, None
     enclosure: Option[RssEnclosure] = None,
     guid: Option[String] = None,
     pubDate: Option[Long] = None,
-    source: Option[Tuple2[String, String]] = None
+    source: Option[RssSource] = None
     ) = (title, description) match {
     case (None, None) => new RssItem[WithoutTitleOrDescription](title, description, link, author, category, comments, enclosure, guid, pubDate, source)
     case _ => new RssItem[WithTitleOrDescription](title, description, link, author, category, comments, enclosure, guid, pubDate, source)
@@ -28,10 +28,10 @@ class RssItem[Validity <: ItemValidity] private (val title: Option[String] = Non
   val author: Option[String] = None, // TODO email, is it possible to have multiple authors ?
   val category: Option[RssCategory] = None, // TODO list
   val comments: Option[String] = None, // TODO URI
-  val enclosure: Option[RssEnclosure] = None, // TODO proper type, is it possible to have multiple enclosures
+  val enclosure: Option[RssEnclosure] = None, // TODO is it possible to have multiple enclosures
   val guid: Option[String] = None,
   val pubDate: Option[Long] = None,
-  val source: Option[Tuple2[String, String]] = None // TODO proper type
+  val source: Option[RssSource] = None
   ) {
 
   private def copy[V <: ItemValidity](title: Option[String] = title,
@@ -43,7 +43,7 @@ class RssItem[Validity <: ItemValidity] private (val title: Option[String] = Non
     enclosure: Option[RssEnclosure] = enclosure,
     guid: Option[String] = guid,
     pubDate: Option[Long] = pubDate,
-    source: Option[Tuple2[String, String]] = source
+    source: Option[RssSource] = source
     ) = new RssItem[V](title, description, link, author, category, comments, enclosure, guid, pubDate, source)
   
   def withTitle(title: String) = copy[WithTitleOrDescription](title = Some(title))
@@ -74,8 +74,8 @@ class RssItem[Validity <: ItemValidity] private (val title: Option[String] = Non
   def withPubDate(pubDate: Option[Long]) = copy[Validity](pubDate = pubDate)
   def withPubDate(pubDate: Long) = copy[Validity](pubDate = Some(pubDate))
 
-  def withSource(source: Option[Tuple2[String, String]]) = copy[Validity](source = source)
-  def withSource(source: Tuple2[String, String]) = copy[Validity](source = Some(source))
+  def withSource(source: Option[RssSource]) = copy[Validity](source = source)
+  def withSource(source: RssSource) = copy[Validity](source = Some(source))
 
   def toXml = <item>
                 { (for (title <- title) yield <title>{ title }</title>).getOrElse("") }
@@ -87,7 +87,7 @@ class RssItem[Validity <: ItemValidity] private (val title: Option[String] = Non
                 { (for (enclosure <- enclosure) yield <enclosure url={ enclosure.url } length={ enclosure.length.toString } type={ enclosure.mimeType }/>).getOrElse("") }
                 { (for (guid <- guid) yield <guid>{ guid }</guid>).getOrElse("") }
                 { (for (pubDate <- pubDate) yield <pubDate>{ pubDate }</pubDate>).getOrElse("") }
-                { (for ((url, title) <- source) yield <source url={ url }>{ title }</source>).getOrElse("") }
+                { (for (source <- source) yield <source url={ source.url }>{ source.title }</source>).getOrElse("") }
               </item>
 
 }

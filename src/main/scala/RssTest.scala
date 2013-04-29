@@ -6,6 +6,7 @@ import scala.xml.XML
 import scala.language.postfixOps
 import scala.xml.Utility
 import com.tlorrain.ssu.rss.RssEnclosure
+import com.tlorrain.ssu.rss.RssSource
 
 object RssTest extends App {
   
@@ -23,9 +24,10 @@ object RssTest extends App {
         withDescription item._2
         withLink "http://some.other.li.nk"
         withEnclosure RssEnclosure("http://u.rl", 666, "application/doom")
-        withAuthor ("Fredszaq")
-        withComments ("http://yetanother.url")
-        withCategory ("super category"))) toXml)
+        withAuthor "Fredszaq"
+        withComments "http://yetanother.url"
+        withSource RssSource("http://ur.l2", "Some Title")
+        withCategory "super category" )) toXml)
         
     XML.save("/tmp/test", feed , xmlDecl=true )
     val xml=new PrettyPrinter(100, 4).format(XML.loadString(feed.toString))

@@ -1,5 +1,6 @@
 package com.tlorrain.ssu.rss
 
+
 import java.util.Locale
 import scala.collection.immutable.Traversable
 import scala.xml.Utility
@@ -23,7 +24,7 @@ case class RssFeed(title: String,
   textInput: Option[Any] = None, //TODO see how that works, low priority
   skipHours: Option[Traversable[Int]] = None,
   skipDays: Option[Traversable[Int]] = None,
-  items: Option[Traversable[RssItem[WithTitleOrDescription]]] = None) {
+  items: Option[Traversable[RssItem[WithTitleOrDescription]]] = None) extends Xmllizable {
 
   def withLanguage(language: Locale) = copy(language = Some(language))
   def withLanguage(language: Option[Locale]) = copy(language = language)
@@ -80,7 +81,7 @@ case class RssFeed(title: String,
   //def withItems(items: Option[Traversable[RssItem[ValidItem]]]) = copy(items = items) 
   def withItems(items: Traversable[RssItem[WithTitleOrDescription]]) = copy(items = Some(items))
 
-  def toXml = Utility.trim(
+  lazy val toXml = Utility.trim(
     <rss version="2.0">
       <channel>
         <title>{ title }</title>
@@ -92,7 +93,7 @@ case class RssFeed(title: String,
         { (for (webMaster <- webMaster) yield <webMaster>{ webMaster }</webMaster>).getOrElse("") }
         { (for (pubDate <- pubDate) yield <pubDate>{ pubDate }</pubDate>).getOrElse("") }
         { (for (lastBuildDate <- lastBuildDate) yield <lastBuildDate>{ lastBuildDate }</lastBuildDate>).getOrElse("") }
-        { (for (category <- category) yield <category>{ category }</category>).getOrElse("") }
+        { (for (category <- category) yield category.toXml).getOrElse("") }
         { (for (generator <- generator) yield <generator>{ generator }</generator>).getOrElse("") }
         { (for (docs <- docs) yield <docs>{ docs }</docs>).getOrElse("") }
         { (for (cloud <- cloud) yield <cloud>{ cloud }</cloud>).getOrElse("") }

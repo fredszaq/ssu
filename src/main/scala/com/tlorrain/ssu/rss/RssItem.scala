@@ -15,8 +15,7 @@ object RssItem extends RssItem[WithoutTitleOrDescription](None, None, None, None
     enclosure: Option[RssEnclosure] = None,
     guid: Option[String] = None,
     pubDate: Option[Long] = None,
-    source: Option[RssSource] = None
-    ) = (title, description) match {
+    source: Option[RssSource] = None) = (title, description) match {
     case (None, None) => new RssItem[WithoutTitleOrDescription](title, description, link, author, category, comments, enclosure, guid, pubDate, source)
     case _ => new RssItem[WithTitleOrDescription](title, description, link, author, category, comments, enclosure, guid, pubDate, source)
   }
@@ -31,8 +30,7 @@ class RssItem[Validity <: ItemValidity] private (val title: Option[String] = Non
   val enclosure: Option[RssEnclosure] = None, // TODO is it possible to have multiple enclosures
   val guid: Option[String] = None,
   val pubDate: Option[Long] = None,
-  val source: Option[RssSource] = None
-  ) {
+  val source: Option[RssSource] = None) extends Xmllizable{
 
   private def copy[V <: ItemValidity](title: Option[String] = title,
     description: Option[String] = description,
@@ -43,9 +41,8 @@ class RssItem[Validity <: ItemValidity] private (val title: Option[String] = Non
     enclosure: Option[RssEnclosure] = enclosure,
     guid: Option[String] = guid,
     pubDate: Option[Long] = pubDate,
-    source: Option[RssSource] = source
-    ) = new RssItem[V](title, description, link, author, category, comments, enclosure, guid, pubDate, source)
-  
+    source: Option[RssSource] = source) = new RssItem[V](title, description, link, author, category, comments, enclosure, guid, pubDate, source)
+
   def withTitle(title: String) = copy[WithTitleOrDescription](title = Some(title))
 
   def withDescription(description: String) = copy[WithTitleOrDescription](description = Some(description))
@@ -59,7 +56,7 @@ class RssItem[Validity <: ItemValidity] private (val title: Option[String] = Non
   // TODO type erasure problem if uncommented
   // def withCategory(category: Option[String]) = copy[Validity](category = category map ( s => RssCategory(s)))
   def withCategory(category: String) = copy[Validity](category = Some(RssCategory(category)))
-  def withCategory(category: Option[RssCategory]) = copy[Validity](category = category )
+  def withCategory(category: Option[RssCategory]) = copy[Validity](category = category)
   def withCategory(category: RssCategory) = copy[Validity](category = Some(category))
 
   def withComments(comments: Option[String]) = copy[Validity](comments = comments)
@@ -77,17 +74,17 @@ class RssItem[Validity <: ItemValidity] private (val title: Option[String] = Non
   def withSource(source: Option[RssSource]) = copy[Validity](source = source)
   def withSource(source: RssSource) = copy[Validity](source = Some(source))
 
-  def toXml = <item>
-                { (for (title <- title) yield <title>{ title }</title>).getOrElse("") }
-                { (for (description <- description) yield <description>{ description }</description>).getOrElse("") }
-                { (for (link <- link) yield <link>{ link }</link>).getOrElse("") }
-                { (for (author <- author) yield <author>{ author }</author>).getOrElse("") }
-                { (for (category <- category) yield <category>{ category }</category>).getOrElse("") }
-                { (for (comments <- comments) yield <comments>{ comments }</comments>).getOrElse("") }
-                { (for (enclosure <- enclosure) yield <enclosure url={ enclosure.url } length={ enclosure.length.toString } type={ enclosure.mimeType }/>).getOrElse("") }
-                { (for (guid <- guid) yield <guid>{ guid }</guid>).getOrElse("") }
-                { (for (pubDate <- pubDate) yield <pubDate>{ pubDate }</pubDate>).getOrElse("") }
-                { (for (source <- source) yield <source url={ source.url }>{ source.title }</source>).getOrElse("") }
+  lazy val toXml = <item>
+                { (title map (title => <title>{ title }</title>)).getOrElse("") }
+                { (description map (description => <description>{ description }</description>)).getOrElse("") }
+                { (link map (link => <link>{ link }</link>)).getOrElse("") }
+                { (author map (author => <author>{ author }</author>)).getOrElse("") }
+                { (category map (category => category.toXml)).getOrElse("") }
+                { (comments map (comments => <comments>{ comments }</comments>)).getOrElse("") }
+                { (enclosure map (enclosure => enclosure.toXml)).getOrElse("") }
+                { (guid map (guid => <guid>{ guid }</guid>)).getOrElse("") }
+                { (pubDate map (pubDate => <pubDate>{ pubDate }</pubDate>)).getOrElse("") }
+                { (source map (source => source.toXml)).getOrElse("") }
               </item>
 
 }

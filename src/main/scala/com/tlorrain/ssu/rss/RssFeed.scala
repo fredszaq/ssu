@@ -87,23 +87,23 @@ case class RssFeed(title: String,
         <title>{ title }</title>
         <link>{ link }</link>
         <description>{ description }</description>
-        { (for (language <- language) yield <language>{ language }</language>).getOrElse("") }
-        { (for (copyright <- copyright) yield <copyright>{ copyright }</copyright>).getOrElse("") }
-        { (for (managingEditor <- managingEditor) yield <managingEditor>{ managingEditor }</managingEditor>).getOrElse("") }
-        { (for (webMaster <- webMaster) yield <webMaster>{ webMaster }</webMaster>).getOrElse("") }
-        { (for (pubDate <- pubDate) yield <pubDate>{ pubDate }</pubDate>).getOrElse("") }
-        { (for (lastBuildDate <- lastBuildDate) yield <lastBuildDate>{ lastBuildDate }</lastBuildDate>).getOrElse("") }
-        { (for (category <- category) yield category.toXml).getOrElse("") }
-        { (for (generator <- generator) yield <generator>{ generator }</generator>).getOrElse("") }
-        { (for (docs <- docs) yield <docs>{ docs }</docs>).getOrElse("") }
-        { (for (cloud <- cloud) yield <cloud>{ cloud }</cloud>).getOrElse("") }
-        { (for (ttl <- ttl) yield <ttl>{ ttl }</ttl>).getOrElse("") }
-        { (for (image <- image) yield <image>{ image }</image>).getOrElse("") }
-        { (for (rating <- rating) yield <rating>{ rating }</rating>).getOrElse("") }
-        { (for (textInput <- textInput) yield <textInput>{ textInput }</textInput>).getOrElse("") }
-        { (for (skipHours <- skipHours) yield <skipHours>{ skipHours }</skipHours>).getOrElse("") }
-        { (for (skipDays <- skipDays) yield <skipDays>{ skipDays }</skipDays>).getOrElse("") }
-        { (for (items <- items) yield for (item <- items) yield item.toXml).getOrElse("") }
+        { (language map (language => <language>{ language }</language>)).getOrElse("") }
+        { (copyright map (copyright => <copyright>{ copyright }</copyright>)).getOrElse("") }
+        { (managingEditor map (managingEditor => <managingEditor>{ managingEditor }</managingEditor>)).getOrElse("") }
+        { (webMaster map (webMaster => <webMaster>{ webMaster }</webMaster>)).getOrElse("") }
+        { (pubDate map (pubDate => <pubDate>{ pubDate }</pubDate>)).getOrElse("") }
+        { (lastBuildDate map (lastBuildDate => <lastBuildDate>{ lastBuildDate }</lastBuildDate>)).getOrElse("") }
+        { (category map (category => category.toXml)).getOrElse("") }
+        { (generator map (generator => <generator>{ generator }</generator>)).getOrElse("") }
+        { (docs map (docs => <docs>{ docs }</docs>)).getOrElse("") }
+        { (cloud map (cloud => <cloud>{ cloud }</cloud>)).getOrElse("") }
+        { (ttl map (ttl => <ttl>{ ttl }</ttl>)).getOrElse("") }
+        { (image map (image => <image>{ image }</image>)).getOrElse("") }
+        { (rating map (rating => <rating>{ rating }</rating>)).getOrElse("") }
+        { (textInput map (textInput => <textInput>{ textInput }</textInput>)).getOrElse("") }
+        { (skipHours map (skipHours => <skipHours>{ skipHours }</skipHours>)).getOrElse("") }
+        { (skipDays map (skipDays => <skipDays>{ skipDays }</skipDays>)).getOrElse("") }
+        { (items map (items => items map (item => item.toXml))).getOrElse("") }
       </channel>
     </rss>)
 }

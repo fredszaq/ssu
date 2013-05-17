@@ -74,6 +74,8 @@ class RssItem[Validity <: ItemValidity] private (val title: Option[String] = Non
   def withSource(source: Option[RssSource]) = copy[Validity](source = source)
   def withSource(source: RssSource) = copy[Validity](source = Some(source))
 
+  lazy val formatedPubDate = formatDateRFC822(pubDate)
+  
   lazy val toXml = <item>
                 { (title map (title => <title>{ title }</title>)).getOrElse("") }
                 { (description map (description => <description>{ description }</description>)).getOrElse("") }
@@ -83,7 +85,7 @@ class RssItem[Validity <: ItemValidity] private (val title: Option[String] = Non
                 { (comments map (comments => <comments>{ comments }</comments>)).getOrElse("") }
                 { (enclosure map (enclosure => enclosure.toXml)).getOrElse("") }
                 { (guid map (guid => <guid>{ guid }</guid>)).getOrElse("") }
-                { (pubDate map (pubDate => <pubDate>{ pubDate }</pubDate>)).getOrElse("") }
+                { (formatedPubDate map (pubDate => <pubDate>{ pubDate }</pubDate>)).getOrElse("") }
                 { (source map (source => source.toXml)).getOrElse("") }
               </item>
 

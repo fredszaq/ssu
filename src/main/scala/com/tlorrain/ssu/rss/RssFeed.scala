@@ -4,6 +4,8 @@ package com.tlorrain.ssu.rss
 import java.util.Locale
 import scala.collection.immutable.Traversable
 import scala.xml.Utility
+import java.text.SimpleDateFormat
+import java.util.Date
 
 case class RssFeed(title: String,
   link: String, //TODO URI
@@ -23,7 +25,7 @@ case class RssFeed(title: String,
   rating: Option[String] = None, //TODO see PICS Rating rules
   textInput: Option[Any] = None, //TODO see how that works, low priority
   skipHours: Option[Traversable[Int]] = None,
-  skipDays: Option[Traversable[Int]] = None,
+  skipDays: Option[Traversable[String]] = None, // TODO use sealed trait
   items: Option[Traversable[RssItem[WithTitleOrDescription]]] = None) extends Xmllizable {
 
   def withLanguage(language: Locale) = copy(language = Some(language))
@@ -74,12 +76,15 @@ case class RssFeed(title: String,
   def withSkipHours(skipHours: Option[Traversable[Int]]) = copy(skipHours = skipHours)
   def withSkipHours(skipHours: Traversable[Int]) = copy(skipHours = Some(skipHours))
 
-  def withSkipDays(skipDays: Option[Traversable[Int]]) = copy(skipDays = skipDays)
-  def withSkipDays(skipDays: Traversable[Int]) = copy(skipDays = Some(skipDays))
+  def withSkipDays(skipDays: Option[Traversable[String]]) = copy(skipDays = skipDays)
+  def withSkipDays(skipDays: Traversable[String]) = copy(skipDays = Some(skipDays))
 
   // TODO if uncommented the error when providing a Traversable[InvalidItem] is less comprehensible
   //def withItems(items: Option[Traversable[RssItem[ValidItem]]]) = copy(items = items) 
   def withItems(items: Traversable[RssItem[WithTitleOrDescription]]) = copy(items = Some(items))
+  
+  lazy val formatedPubDate = formatDateRFC822(pubDate)
+  lazy val formatedLastBuildDate = formatDateRFC822(lastBuildDate)
 
   lazy val toXml = Utility.trim(
     <rss version="2.0">
@@ -91,8 +96,8 @@ case class RssFeed(title: String,
         { (copyright map (copyright => <copyright>{ copyright }</copyright>)).getOrElse("") }
         { (managingEditor map (managingEditor => <managingEditor>{ managingEditor }</managingEditor>)).getOrElse("") }
         { (webMaster map (webMaster => <webMaster>{ webMaster }</webMaster>)).getOrElse("") }
-        { (pubDate map (pubDate => <pubDate>{ pubDate }</pubDate>)).getOrElse("") }
-        { (lastBuildDate map (lastBuildDate => <lastBuildDate>{ lastBuildDate }</lastBuildDate>)).getOrElse("") }
+        { (formatedPubDate map (pubDate => <pubDate>{ pubDate }</pubDate>)).getOrElse("") }
+        { (formatedLastBuildDate map (lastBuildDate => <lastBuildDate>{ lastBuildDate }</lastBuildDate>)).getOrElse("") }
         { (category map (category => category.toXml)).getOrElse("") }
         { (generator map (generator => <generator>{ generator }</generator>)).getOrElse("") }
         { (docs map (docs => <docs>{ docs }</docs>)).getOrElse("") }
@@ -101,8 +106,8 @@ case class RssFeed(title: String,
         { (image map (image => <image>{ image }</image>)).getOrElse("") }
         { (rating map (rating => <rating>{ rating }</rating>)).getOrElse("") }
         { (textInput map (textInput => <textInput>{ textInput }</textInput>)).getOrElse("") }
-        { (skipHours map (skipHours => <skipHours>{ skipHours }</skipHours>)).getOrElse("") }
-        { (skipDays map (skipDays => <skipDays>{ skipDays }</skipDays>)).getOrElse("") }
+        { (skipHours map (skipHours => <skipHours>{ skipHours map (hour => <hour> {hour} </hour>) }</skipHours>)).getOrElse("") }
+        { (skipDays map (skipDays => <skipDays>{ skipDays map (day => <day> {day} </day>)}</skipDays>)).getOrElse("") }
         { (items map (items => items map (item => item.toXml))).getOrElse("") }
       </channel>
     </rss>)

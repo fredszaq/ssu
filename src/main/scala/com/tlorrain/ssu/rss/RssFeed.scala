@@ -1,6 +1,5 @@
 package com.tlorrain.ssu.rss
 
-
 import java.util.Locale
 import scala.collection.immutable.Traversable
 import scala.xml.Utility
@@ -45,11 +44,11 @@ case class RssFeed(title: String,
 
   def withLastBuildDate(lastBuildDate: Option[Long]) = copy(lastBuildDate = lastBuildDate)
   def withLastBuildDate(lastBuildDate: Long) = copy(lastBuildDate = Some(lastBuildDate))
-  
+
   // TODO type erasure problem if uncommented
   // def withCategory(category: Option[String]) = copy(category = category map ( s => RssCategory(s)))
   def withCategory(category: String) = copy(category = Some(RssCategory(category)))
-  def withCategory(category: Option[RssCategory]) = copy(category = category )
+  def withCategory(category: Option[RssCategory]) = copy(category = category)
   def withCategory(category: RssCategory) = copy(category = Some(category))
 
   def withGenerator(generator: Option[String]) = copy(generator = generator)
@@ -79,10 +78,10 @@ case class RssFeed(title: String,
   def withSkipDays(skipDays: Option[Traversable[String]]) = copy(skipDays = skipDays)
   def withSkipDays(skipDays: Traversable[String]) = copy(skipDays = Some(skipDays))
 
-  // TODO if uncommented the error when providing a Traversable[InvalidItem] is less comprehensible
-  //def withItems(items: Option[Traversable[RssItem[ValidItem]]]) = copy(items = items) 
+  // TODO if uncommented the error when providing a Traversable[WithoutTitleOrDescription] is less comprehensible
+  //def withItems(items: Option[Traversable[RssItem[WithTitleOrDescription]]]) = copy(items = items) 
   def withItems(items: Traversable[RssItem[WithTitleOrDescription]]) = copy(items = Some(items))
-  
+
   lazy val formatedPubDate = formatDateRFC822(pubDate)
   lazy val formatedLastBuildDate = formatDateRFC822(lastBuildDate)
 
@@ -92,23 +91,27 @@ case class RssFeed(title: String,
         <title>{ title }</title>
         <link>{ link }</link>
         <description>{ description }</description>
-        { (language map (language => <language>{ language }</language>)).getOrElse("") }
-        { (copyright map (copyright => <copyright>{ copyright }</copyright>)).getOrElse("") }
-        { (managingEditor map (managingEditor => <managingEditor>{ managingEditor }</managingEditor>)).getOrElse("") }
-        { (webMaster map (webMaster => <webMaster>{ webMaster }</webMaster>)).getOrElse("") }
-        { (formatedPubDate map (pubDate => <pubDate>{ pubDate }</pubDate>)).getOrElse("") }
-        { (formatedLastBuildDate map (lastBuildDate => <lastBuildDate>{ lastBuildDate }</lastBuildDate>)).getOrElse("") }
-        { (category map (category => category.toXml)).getOrElse("") }
-        { (generator map (generator => <generator>{ generator }</generator>)).getOrElse("") }
-        { (docs map (docs => <docs>{ docs }</docs>)).getOrElse("") }
-        { (cloud map (cloud => <cloud>{ cloud }</cloud>)).getOrElse("") }
-        { (ttl map (ttl => <ttl>{ ttl }</ttl>)).getOrElse("") }
-        { (image map (image => <image>{ image }</image>)).getOrElse("") }
-        { (rating map (rating => <rating>{ rating }</rating>)).getOrElse("") }
-        { (textInput map (textInput => <textInput>{ textInput }</textInput>)).getOrElse("") }
-        { (skipHours map (skipHours => <skipHours>{ skipHours map (hour => <hour> {hour} </hour>) }</skipHours>)).getOrElse("") }
-        { (skipDays map (skipDays => <skipDays>{ skipDays map (day => <day> {day} </day>)}</skipDays>)).getOrElse("") }
-        { (items map (items => items map (item => item.toXml))).getOrElse("") }
+        {
+          (List(
+            (language map (language => <language>{ language }</language>)),
+            (copyright map (copyright => <copyright>{ copyright }</copyright>)),
+            (managingEditor map (managingEditor => <managingEditor>{ managingEditor }</managingEditor>)),
+            (webMaster map (webMaster => <webMaster>{ webMaster }</webMaster>)),
+            (formatedPubDate map (pubDate => <pubDate>{ pubDate }</pubDate>)),
+            (formatedLastBuildDate map (lastBuildDate => <lastBuildDate>{ lastBuildDate }</lastBuildDate>)),
+            (category map (category => category.toXml)),
+            (generator map (generator => <generator>{ generator }</generator>)),
+            (docs map (docs => <docs>{ docs }</docs>)),
+            (cloud map (cloud => <cloud>{ cloud }</cloud>)),
+            (ttl map (ttl => <ttl>{ ttl }</ttl>)),
+            (image map (image => <image>{ image }</image>)),
+            (rating map (rating => <rating>{ rating }</rating>)),
+            (textInput map (textInput => <textInput>{ textInput }</textInput>)),
+            (skipHours map (skipHours => <skipHours>{ skipHours map (hour => <hour> { hour } </hour>) }</skipHours>)),
+            (skipDays map (skipDays => <skipDays>{ skipDays map (day => <day> { day } </day>) }</skipDays>)),
+            (items map (items => items map (item => item.toXml))))
+            map (elem => elem.getOrElse("")))
+        }
       </channel>
     </rss>)
 }

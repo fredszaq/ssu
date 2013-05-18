@@ -30,7 +30,7 @@ class RssItem[Validity <: ItemValidity] private (val title: Option[String] = Non
   val enclosure: Option[RssEnclosure] = None, // TODO is it possible to have multiple enclosures
   val guid: Option[String] = None,
   val pubDate: Option[Long] = None,
-  val source: Option[RssSource] = None) extends Xmllizable{
+  val source: Option[RssSource] = None) extends Xmllizable {
 
   private def copy[V <: ItemValidity](title: Option[String] = title,
     description: Option[String] = description,
@@ -75,18 +75,22 @@ class RssItem[Validity <: ItemValidity] private (val title: Option[String] = Non
   def withSource(source: RssSource) = copy[Validity](source = Some(source))
 
   lazy val formatedPubDate = formatDateRFC822(pubDate)
-  
+
   lazy val toXml = <item>
-                { (title map (title => <title>{ title }</title>)).getOrElse("") }
-                { (description map (description => <description>{ description }</description>)).getOrElse("") }
-                { (link map (link => <link>{ link }</link>)).getOrElse("") }
-                { (author map (author => <author>{ author }</author>)).getOrElse("") }
-                { (category map (category => category.toXml)).getOrElse("") }
-                { (comments map (comments => <comments>{ comments }</comments>)).getOrElse("") }
-                { (enclosure map (enclosure => enclosure.toXml)).getOrElse("") }
-                { (guid map (guid => <guid>{ guid }</guid>)).getOrElse("") }
-                { (formatedPubDate map (pubDate => <pubDate>{ pubDate }</pubDate>)).getOrElse("") }
-                { (source map (source => source.toXml)).getOrElse("") }
-              </item>
+                     {
+                       (List(
+                         (title map (title => <title>{ title }</title>)),
+                         (description map (description => <description>{ description }</description>)),
+                         (link map (link => <link>{ link }</link>)),
+                         (author map (author => <author>{ author }</author>)),
+                         (category map (category => category.toXml)),
+                         (comments map (comments => <comments>{ comments }</comments>)),
+                         (enclosure map (enclosure => enclosure.toXml)),
+                         (guid map (guid => <guid>{ guid }</guid>)),
+                         (formatedPubDate map (pubDate => <pubDate>{ pubDate }</pubDate>)),
+                         (source map (source => source.toXml)))
+                         map (elem => elem.getOrElse("")))
+                     }
+                   </item>
 
 }

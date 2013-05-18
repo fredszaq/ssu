@@ -1,6 +1,6 @@
 package com.tlorrain.ssu.rss
 
-abstract class ItemValidity
+sealed trait ItemValidity
 
 abstract class WithTitleOrDescription extends ItemValidity
 abstract class WithoutTitleOrDescription extends ItemValidity

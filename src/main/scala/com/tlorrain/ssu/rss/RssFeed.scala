@@ -20,7 +20,7 @@ case class RssFeed(title: String,
   docs: Option[String] = Some("http://www.rssboard.org/rss-specification"), // TODO URI
   cloud: Option[Any] = None, //see RSS cloud interface
   ttl: Option[Int] = None,
-  image: Option[Any] = None, // TODO RSS Image
+  image: Option[RssImage[WithUrl, WithTitle]] = None,
   rating: Option[String] = None, //TODO see PICS Rating rules
   textInput: Option[Any] = None, //TODO see how that works, low priority
   skipHours: Option[Traversable[Int]] = None,
@@ -63,8 +63,8 @@ case class RssFeed(title: String,
   def withTtl(ttl: Option[Int]) = copy(ttl = ttl)
   def withTtl(ttl: Int) = copy(ttl = Some(ttl))
 
-  def withImage(image: Option[Any]) = copy(image = image)
-  def withImage(image: Any) = copy(image = Some(image))
+  def withImage(image: Option[RssImage[WithUrl, WithTitle]]) = copy(image = image)
+  def withImage(image: RssImage[WithUrl, WithTitle]) = copy(image = Some(image))
 
   def withRating(rating: Option[String]) = copy(rating = rating)
   def withRating(rating: String) = copy(rating = Some(rating))
@@ -104,7 +104,7 @@ case class RssFeed(title: String,
             (docs map (docs => <docs>{ docs }</docs>)),
             (cloud map (cloud => <cloud>{ cloud }</cloud>)),
             (ttl map (ttl => <ttl>{ ttl }</ttl>)),
-            (image map (image => <image>{ image }</image>)),
+            (image map (image => image.toXml)),
             (rating map (rating => <rating>{ rating }</rating>)),
             (textInput map (textInput => <textInput>{ textInput }</textInput>)),
             (skipHours map (skipHours => <skipHours>{ skipHours map (hour => <hour> { hour } </hour>) }</skipHours>)),

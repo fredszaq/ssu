@@ -1,5 +1,7 @@
 package com.tlorrain.ssu.rss
 
-case class RssSource(url:String, title:String) extends Xmllizable {// TODO url
-	lazy val toXml = <source url={ url }>{ title }</source>
+import java.net.URL
+
+case class RssSource(url:URL, title:String) extends Xmllizable {
+	lazy val toXml = <source url={ url.toString() }>{ title }</source>
 }

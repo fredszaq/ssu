@@ -9,14 +9,14 @@ import org.scalatest.FunSuite
 class RssFeedCompilationTest extends FunSuite {
 
   def skeletonItems(extra: String) = s"""
-		  val rss = (RssFeed("some title", "http://someli.nk", "some description")
+		  val rss = (RssFeed("some title", new java.net.URL("http://someli.nk"), "some description")
 		  	withCopyright "SSU"
 		  	withItems (items map (item => RssItem() 
 		  		$extra
 		  		withLink item._3 
 		  		withAuthor item._4)) toXml)"""
   def skeletonImage(extra: String) = s"""
-  			val rss = (RssFeed("some title", "http://someli.nk", "some description")
+  			val rss = (RssFeed("some title", new java.net.URL("http://someli.nk"), "some description")
 		  		withCopyright "SSU"
 		  		withImage (RssImage
 		  		$extra ) toXml)"""
@@ -28,16 +28,16 @@ class RssFeedCompilationTest extends FunSuite {
   
   
   val badImageEmptyCode = skeletonImage("")
-  val badImageUrlOnlyCode = skeletonImage("""withUrl("http://url.com")""")
+  val badImageUrlOnlyCode = skeletonImage("""withUrl(new java.net.URL("http://url.com"))""")
   val badImageTitleOnlyCode = skeletonImage("""withTitle("title")""")
-  val goodImageTitleDescriptionCode = skeletonImage("""withTitle("title") withUrl("http://url.com")""")
+  val goodImageTitleDescriptionCode = skeletonImage("""withTitle("title") withUrl(new java.net.URL("http://url.com"))""")
 
   def compile(code: String) = {
     val toolBox = scala.reflect.runtime.universe.runtimeMirror(getClass.getClassLoader).mkToolBox()
     toolBox.eval(toolBox.parse(s"""
         object Test extends Application { 
     			import com.tlorrain.ssu.rss._
-    			val items = ("title1", "content1", "http://link1.com", "author1") :: ("title2", "content2", "http://link2.com","author2") :: Nil       
+    			val items = ("title1", "content1", new java.net.URL("http://link1.com"), "author1") :: ("title2", "content2", new java.net.URL("http://link2.com"),"author2") :: Nil       
     			$code     
         }"""))
 

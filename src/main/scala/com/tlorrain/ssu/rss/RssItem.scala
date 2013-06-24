@@ -1,5 +1,7 @@
 package com.tlorrain.ssu.rss
 
+import java.net.URL
+
 sealed trait ItemValidity
 
 abstract class WithTitleOrDescription extends ItemValidity
@@ -8,10 +10,10 @@ abstract class WithoutTitleOrDescription extends ItemValidity
 object RssItem extends RssItem[WithoutTitleOrDescription](None, None, None, None, None, None, None, None, None, None) {
   def apply(title: Option[String] = None,
     description: Option[String] = None,
-    link: Option[String] = None,
+    link: Option[URL] = None,
     author: Option[String] = None,
     category: Option[RssCategory] = None,
-    comments: Option[String] = None,
+    comments: Option[URL] = None,
     enclosure: Option[RssEnclosure] = None,
     guid: Option[String] = None,
     pubDate: Option[Long] = None,
@@ -23,10 +25,10 @@ object RssItem extends RssItem[WithoutTitleOrDescription](None, None, None, None
 
 class RssItem[Validity <: ItemValidity] private (val title: Option[String] = None,
   val description: Option[String] = None,
-  val link: Option[String] = None, //TODO URI
+  val link: Option[URL] = None,
   val author: Option[String] = None, // TODO email, is it possible to have multiple authors ?
   val category: Option[RssCategory] = None, // TODO list
-  val comments: Option[String] = None, // TODO URI
+  val comments: Option[URL] = None,
   val enclosure: Option[RssEnclosure] = None, // TODO is it possible to have multiple enclosures
   val guid: Option[String] = None,
   val pubDate: Option[Long] = None,
@@ -34,10 +36,10 @@ class RssItem[Validity <: ItemValidity] private (val title: Option[String] = Non
 
   private def copy[V <: ItemValidity](title: Option[String] = title,
     description: Option[String] = description,
-    link: Option[String] = link,
+    link: Option[URL] = link,
     author: Option[String] = author,
     category: Option[RssCategory] = category,
-    comments: Option[String] = comments,
+    comments: Option[URL] = comments,
     enclosure: Option[RssEnclosure] = enclosure,
     guid: Option[String] = guid,
     pubDate: Option[Long] = pubDate,
@@ -47,8 +49,8 @@ class RssItem[Validity <: ItemValidity] private (val title: Option[String] = Non
 
   def withDescription(description: String) = copy[WithTitleOrDescription](description = Some(description))
 
-  def withLink(link: Option[String]) = copy[Validity](link = link)
-  def withLink(link: String) = copy[Validity](link = Some(link))
+  def withLink(link: Option[URL]) = copy[Validity](link = link)
+  def withLink(link: URL) = copy[Validity](link = Some(link))
 
   def withAuthor(author: Option[String]) = copy[Validity](author = author)
   def withAuthor(author: String) = copy[Validity](author = Some(author))
@@ -59,8 +61,8 @@ class RssItem[Validity <: ItemValidity] private (val title: Option[String] = Non
   def withCategory(category: Option[RssCategory]) = copy[Validity](category = category)
   def withCategory(category: RssCategory) = copy[Validity](category = Some(category))
 
-  def withComments(comments: Option[String]) = copy[Validity](comments = comments)
-  def withComments(comments: String) = copy[Validity](comments = Some(comments))
+  def withComments(comments: Option[URL]) = copy[Validity](comments = comments)
+  def withComments(comments: URL) = copy[Validity](comments = Some(comments))
 
   def withEnclosure(enclosure: Option[RssEnclosure]) = copy[Validity](enclosure = enclosure)
   def withEnclosure(enclosure: RssEnclosure) = copy[Validity](enclosure = Some(enclosure))

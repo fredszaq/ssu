@@ -1,5 +1,7 @@
 package com.tlorrain.ssu.rss
 
+import java.net.URL
+
 sealed trait ImageUrlValidity
 abstract class WithUrl extends ImageUrlValidity
 abstract class WithoutUrl extends ImageUrlValidity
@@ -10,9 +12,9 @@ sealed trait WithoutTitle extends ImageTitleValidity
 
 object RssImage extends RssImage[WithoutUrl,WithoutTitle] (None,None,None,None,None,None)
 
-class RssImage[UrlValidity <: ImageUrlValidity, TitleValidity <: ImageTitleValidity] private (val url: Option[String] = None,
+class RssImage[UrlValidity <: ImageUrlValidity, TitleValidity <: ImageTitleValidity] private (val url: Option[URL] = None,
   val title: Option[String] = None,
-  val link: Option[String] = None,
+  val link: Option[URL] = None,
   val width: Option[Int] = None,
   val height: Option[Int] = None,
   val description: Option[String] = None) extends Xmllizable {
@@ -22,18 +24,18 @@ class RssImage[UrlValidity <: ImageUrlValidity, TitleValidity <: ImageTitleValid
     case _ => link
   }
 
-  private def copy[UrlValidity <: ImageUrlValidity, TitleValidity <: ImageTitleValidity](url: Option[String] = url,
+  private def copy[UrlValidity <: ImageUrlValidity, TitleValidity <: ImageTitleValidity](url: Option[URL] = url,
     title: Option[String] = title,
-    link: Option[String] = link,
+    link: Option[URL] = link,
     width: Option[Int] = width,
     height: Option[Int] = height,
     description: Option[String] = description) = new RssImage[UrlValidity, TitleValidity](url, title, link, width, height, description)
 
-  def withUrl(url: String) = copy[WithUrl, TitleValidity](url = Some(url))
+  def withUrl(url: URL) = copy[WithUrl, TitleValidity](url = Some(url))
 
   def withTitle(title: String) = copy[UrlValidity, WithTitle](title = Some(title))
 
-  def withLink(link: String) = copy[UrlValidity, TitleValidity](link = Some(link))
+  def withLink(link: URL) = copy[UrlValidity, TitleValidity](link = Some(link))
 
   def withWidth(width: Option[Int]) = copy[UrlValidity, TitleValidity](width = width)
   def withWidth(width: Int) = copy[UrlValidity, TitleValidity](width = Some(width))

@@ -5,9 +5,10 @@ import scala.collection.immutable.Traversable
 import scala.xml.Utility
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.net.URL
 
 case class RssFeed(title: String,
-  link: String, //TODO URI
+  link: URL,
   description: String,
   language: Option[Locale] = None,
   copyright: Option[String] = None,
@@ -17,7 +18,7 @@ case class RssFeed(title: String,
   lastBuildDate: Option[Long] = None,
   category: Option[RssCategory] = None, // TODO list
   generator: Option[String] = Some("Scala Syndication Utils"),
-  docs: Option[String] = Some("http://www.rssboard.org/rss-specification"), // TODO URI
+  docs: Option[URL] = Some(new URL("http://www.rssboard.org/rss-specification")),
   cloud: Option[Any] = None, //see RSS cloud interface
   ttl: Option[Int] = None,
   image: Option[RssImage[WithUrl, WithTitle]] = None,
@@ -54,8 +55,8 @@ case class RssFeed(title: String,
   def withGenerator(generator: Option[String]) = copy(generator = generator)
   def withGenerator(generator: String) = copy(generator = Some(generator))
 
-  def withDocs(docs: Option[String]) = copy(docs = docs)
-  def withDocs(docs: String) = copy(docs = Some(docs))
+  def withDocs(docs: Option[URL]) = copy(docs = docs)
+  def withDocs(docs: URL) = copy(docs = Some(docs))
 
   def withCloud(cloud: Option[Any]) = copy(cloud = cloud)
   def withCloud(cloud: Any) = copy(cloud = Some(cloud))

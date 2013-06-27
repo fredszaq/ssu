@@ -46,7 +46,7 @@ class RssFeedToXmlTest extends FunSuite with ShouldMatchers {
         withRating "TODO"
         withTextInput "TODO"
         withSkipHours 0 :: 1 :: 12 :: 15 :: Nil
-        withSkipDays "Saturday" :: "Sunday" :: Nil
+        withSkipDays Saturday :: Sunday :: Nil
         withItems (items map (item => RssItem
           withTitle item._1
           withDescription item._2

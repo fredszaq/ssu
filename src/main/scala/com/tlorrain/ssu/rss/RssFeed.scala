@@ -25,7 +25,7 @@ case class RssFeed(title: String,
   rating: Option[String] = None, //TODO see PICS Rating rules
   textInput: Option[Any] = None, //TODO see how that works, low priority
   skipHours: Option[Traversable[Int]] = None,
-  skipDays: Option[Traversable[String]] = None, // TODO use sealed trait
+  skipDays: Option[Traversable[RssDay]] = None,
   items: Option[Traversable[RssItem[WithTitleOrDescription]]] = None) extends Xmllizable {
 
   def withLanguage(language: Locale) = copy(language = Some(language))
@@ -76,8 +76,8 @@ case class RssFeed(title: String,
   def withSkipHours(skipHours: Option[Traversable[Int]]) = copy(skipHours = skipHours)
   def withSkipHours(skipHours: Traversable[Int]) = copy(skipHours = Some(skipHours))
 
-  def withSkipDays(skipDays: Option[Traversable[String]]) = copy(skipDays = skipDays)
-  def withSkipDays(skipDays: Traversable[String]) = copy(skipDays = Some(skipDays))
+  def withSkipDays(skipDays: Option[Traversable[RssDay]]) = copy(skipDays = skipDays)
+  def withSkipDays(skipDays: Traversable[RssDay]) = copy(skipDays = Some(skipDays))
 
   // TODO if uncommented the error when providing a Traversable[WithoutTitleOrDescription] is less comprehensible
   //def withItems(items: Option[Traversable[RssItem[WithTitleOrDescription]]]) = copy(items = items) 
@@ -109,7 +109,7 @@ case class RssFeed(title: String,
             (rating map (rating => <rating>{ rating }</rating>)),
             (textInput map (textInput => <textInput>{ textInput }</textInput>)),
             (skipHours map (skipHours => <skipHours>{ skipHours map (hour => <hour> { hour } </hour>) }</skipHours>)),
-            (skipDays map (skipDays => <skipDays>{ skipDays map (day => <day> { day } </day>) }</skipDays>)),
+            (skipDays map (skipDays => <skipDays>{ skipDays map (day => <day> { day.name } </day>) }</skipDays>)),
             (items map (items => items map (item => item.toXml))))
             map (elem => elem.getOrElse("")))
         }

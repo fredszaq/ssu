@@ -1,4 +1,4 @@
-# Scala Syndication Utils (SSU)
+# Scala Syndication Utils (SSU) [![Build Status](https://travis-ci.org/fredszaq/ssu.png?branch=master)](https://travis-ci.org/fredszaq/ssu)
 SSU is a simple and fluent Scala library to generate RSS feeds.
 ## Creating a simple RSS feed
 
